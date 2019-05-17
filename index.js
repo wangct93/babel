@@ -9,7 +9,6 @@ const fs = require('fs');
 
 const util = require('wangct-server-util');
 
-
 class Babel {
     constructor(option) {
         this.init(option);
@@ -17,10 +16,18 @@ class Babel {
     init(option) {
         const state = {
             accept: ['js', 'jsx','ts','tsx'],
-            option:{
-                presets: ['@babel/preset-typescript','@babel/preset-react','@babel/preset-env'],
+            option: {
+                presets: ['@babel/preset-react', '@babel/preset-env'],
                 plugins: [
-                  ["@babel/plugin-proposal-decorators",{legacy:true}]
+                    ['@babel/plugin-transform-typescript', {
+                        isTSX: true,
+                        allExtensions: true
+                    }],
+                    '@babel/plugin-transform-runtime',
+                    ['@babel/plugin-proposal-decorators', {legacy: true}],
+                    '@babel/plugin-syntax-dynamic-import',
+                    '@babel/plugin-proposal-class-properties',
+                    '@babel/plugin-proposal-export-default-from',
                 ]
             }
         };
@@ -34,8 +41,7 @@ class Babel {
     start() {
         const {props} = this;
         util.copyFile({
-            src:props.src,
-            output:props.output,
+            ...props,
             transform:(filePath,outputFilePath,callback) => {
                 const extname = path.extname(filePath).substr(1);
                 if(this.props.accept.includes(extname)){
@@ -54,8 +60,7 @@ class Babel {
                         callback();
                     });
                 }
-            },
-            success:props.success
+            }
         });
     }
 }
