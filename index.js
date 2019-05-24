@@ -9,27 +9,34 @@ const fs = require('fs');
 
 const util = require('wangct-server-util');
 
+
 class Babel {
     constructor(option) {
         this.init(option);
     }
+
     init(option) {
+        const plugins = [
+            ['@babel/plugin-transform-typescript', {
+                isTSX: true,
+                allExtensions: true
+            }],
+            '@babel/plugin-syntax-dynamic-import',
+            ['@babel/plugin-proposal-decorators', {legacy: true}],
+            ['@babel/plugin-proposal-class-properties',{loose:true}],
+            '@babel/plugin-proposal-export-default-from',
+        ];
+        const babelOption = {
+            presets: ['@babel/preset-react', '@babel/preset-env'],
+            plugins
+        };
+        const {runtime = true} = option;
+        if(runtime){
+            plugins.unshift('@babel/plugin-transform-runtime');
+        }
         const state = {
             accept: ['js', 'jsx','ts','tsx'],
-            option: {
-                presets: ['@babel/preset-react', '@babel/preset-env'],
-                plugins: [
-                    ['@babel/plugin-transform-typescript', {
-                        isTSX: true,
-                        allExtensions: true
-                    }],
-                    '@babel/plugin-transform-runtime',
-                    ['@babel/plugin-proposal-decorators', {legacy: true}],
-                    '@babel/plugin-syntax-dynamic-import',
-                    '@babel/plugin-proposal-class-properties',
-                    '@babel/plugin-proposal-export-default-from',
-                ]
-            }
+            option:babelOption
         };
         this.props = {
             ...state,

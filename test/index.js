@@ -8,5 +8,6 @@ const Babel = require('../index');
 
 new Babel({
     src:'test',
-    output:'lib'
+    output:'lib',
+    runtime:false
 });

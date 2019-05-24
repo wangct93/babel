@@ -1,10 +1,11 @@
 {
   "name": "wangct-babel",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node test"
+    "test": "node test",
+    "publish": "npm pu --registry https://registry.npmjs.org/"
   },
   "author": "",
   "license": "ISC",
