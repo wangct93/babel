@@ -3,11 +3,10 @@
  */
 
 
-const Babel = require('../index');
+const babel = require('../index');
 
-
-new Babel({
+babel({
     src:'test',
-    output:'lib',
-    runtime:false
+    output:'lib/test',
 });
+

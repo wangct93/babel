@@ -3,61 +3,32 @@
  */
 const babel = require('@babel/core');
 const path = require('path');
-const appDir = process.cwd();
-const resolve = (...paths) => path.resolve(appDir,...paths);
 const fs = require('fs');
+const {copyFile} = require('wangct-server-util');
+module.exports = start;
 
-const util = require('wangct-server-util');
-
-
-class Babel {
-    constructor(option) {
-        this.init(option);
-    }
-
-    init(option) {
-        const plugins = [
-            ['@babel/plugin-transform-typescript', {
-                isTSX: true,
-                allExtensions: true
-            }],
-            '@babel/plugin-syntax-dynamic-import',
-            ['@babel/plugin-proposal-decorators', {legacy: true}],
-            ['@babel/plugin-proposal-class-properties',{loose:true}],
-            '@babel/plugin-proposal-export-default-from',
-        ];
-        const babelOption = {
-            presets: ['@babel/preset-react', '@babel/preset-env'],
-            plugins
-        };
-        const {runtime = true} = option;
-        if(runtime){
-            plugins.unshift('@babel/plugin-transform-runtime');
-        }
-        const state = {
-            accept: ['js', 'jsx','ts','tsx'],
-            option:babelOption
-        };
-        this.props = {
-            ...state,
-            ...option,
-            output: resolve(option.output)
-        };
-        this.start();
-    }
-    start() {
-        const {props} = this;
-        util.copyFile({
-            ...props,
-            transform:(filePath,outputFilePath,callback) => {
+/**
+ * 开始方法
+ */
+function start(options){
+    const babelOptions = {
+        presets:getPresets(),
+        plugins:getPlugins(options),
+        ...options.options,
+    };
+    return copyFile({
+        ...options,
+        transform:(filePath,outputFilePath) => {
+            return new Promise(callback => {
                 const extname = path.extname(filePath).substr(1);
-                if(this.props.accept.includes(extname)){
-                    babel.transformFile(filePath, props.option, (err, result) => {
+                if(['js', 'jsx','ts','tsx'].includes(extname)){
+                    babel.transformFile(filePath, babelOptions, (err, result) => {
                         if (err) {
                             callback(err);
                         } else {
                             fs.writeFile(outputFilePath.replace(/\.tsx?$/,'.js'), result.code, callback);
                         }
+                        console.log('编译完成：',outputFilePath.replace(/\.tsx?$/,'.js'));
                     });
                 }else{
                     const rs = fs.createReadStream(filePath);
@@ -65,11 +36,37 @@ class Babel {
                     rs.pipe(ws);
                     ws.on('close',() => {
                         callback();
+                        console.log('拷贝完成：',outputFilePath);
                     });
                 }
-            }
-        });
-    }
+            })
+        }
+    });
 }
 
-module.exports = Babel;
+
+function getPlugins(options = {}){
+    const plugins = [
+        ['@babel/plugin-transform-typescript', {
+            isTSX: true,
+            allExtensions: true
+        }],
+        '@babel/plugin-syntax-dynamic-import',
+        ['import', {
+            libraryName: 'antd',
+            style: true
+        },'ant'],
+        ['@babel/plugin-proposal-decorators',{legacy:true}],
+        ['@babel/plugin-proposal-class-properties',{loose:true}],
+        '@babel/plugin-proposal-export-namespace-from',
+        '@babel/plugin-proposal-export-default-from'
+    ];
+    if(options.runtime){
+        plugins.unshift('@babel/plugin-transform-runtime');
+    }
+    return plugins;
+}
+
+function getPresets(){
+    return ['@babel/preset-react', '@babel/preset-env']
+}
