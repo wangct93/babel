@@ -4,7 +4,7 @@
 const babel = require('@babel/core');
 const path = require('path');
 const fs = require('fs');
-const {copyFile} = require('wangct-server-util');
+const {copyFile} = require('@wangct/node-util');
 module.exports = start;
 
 /**
@@ -16,7 +16,7 @@ function start(options){
         plugins:getPlugins(options),
         ...options.options,
     };
-    return copyFile({
+    return copyFile(options.src,options.output,{
         ...options,
         transform:(filePath,outputFilePath) => {
             return new Promise(callback => {
@@ -24,11 +24,12 @@ function start(options){
                 if(['js', 'jsx','ts','tsx'].includes(extname)){
                     babel.transformFile(filePath, babelOptions, (err, result) => {
                         if (err) {
+                            console.log(err);
                             callback(err);
                         } else {
                             fs.writeFile(outputFilePath.replace(/\.tsx?$/,'.js'), result.code, callback);
                         }
-                        console.log('编译完成：',outputFilePath.replace(/\.tsx?$/,'.js'));
+                        console.log('已完成文件：',outputFilePath.replace(/\.tsx?$/,'.js'));
                     });
                 }else{
                     const rs = fs.createReadStream(filePath);

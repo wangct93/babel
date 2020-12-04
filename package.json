@@ -1,11 +1,17 @@
 {
-  "name": "wangct-babel",
-  "version": "1.1.2",
+  "name": "@wangct/babel",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "w-babel": "./bin/start.js"
+  },
   "scripts": {
-    "test": "node test",
-    "publish": "npm pu --registry https://registry.npmjs.org/"
+    "pu": "node scripts/publish",
+    "pu-cmd": "npm pu --registry https://registry.npmjs.org/ --access public",
+    "commit": "node scripts/commit",
+    "push": "node scripts/push",
+    "test": "node test"
   },
   "author": "",
   "license": "ISC",
@@ -17,13 +23,14 @@
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-decorators": "^7.4.4",
     "@babel/plugin-proposal-export-default-from": "^7.5.2",
+    "@babel/plugin-proposal-export-namespace-from": "^7.12.1",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/plugin-transform-typescript": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.5.5",
-    "babel-plugin-import": "^1.12.0",
-    "wangct-server-util": "^1.0.42"
+    "@wangct/node-util": "^1.0.3",
+    "babel-plugin-import": "^1.12.0"
   }
 }

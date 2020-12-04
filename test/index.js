@@ -6,7 +6,7 @@
 const babel = require('../index');
 
 babel({
-    src:'test',
-    output:'lib/test',
+    src:'test/es',
+    output:'lib',
 });
 
