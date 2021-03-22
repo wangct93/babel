@@ -1,6 +1,6 @@
 {
   "name": "@wangct/babel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -16,7 +16,8 @@
   "author": "",
   "license": "ISC",
   "files": [
-    "index.js"
+    "index.js",
+    "bin"
   ],
   "dependencies": {
     "@babel/core": "^7.5.5",
