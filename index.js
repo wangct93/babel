@@ -55,7 +55,8 @@ function getPlugins(options = {}){
         '@babel/plugin-syntax-dynamic-import',
         ['import', {
             libraryName: 'antd',
-            style: true
+            libraryDirectory:'es',
+            style: 'css',
         },'ant'],
         ['@babel/plugin-proposal-decorators',{legacy:true}],
         ['@babel/plugin-proposal-class-properties',{loose:true}],
